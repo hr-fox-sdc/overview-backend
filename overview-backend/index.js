@@ -9,9 +9,9 @@ const db = require('./queries');
 // app.use(cors());
 app.use(express.json());
 
-app.get('/', (request, response) => {
-  response.json({ info: 'Node.js, Express, and Postgres API' });
-});
+// app.get('/', (request, response) => {
+//   response.json({ info: 'Node.js, Express, and Postgres API' });
+// });
 
 // overview routes
 app.get('/products', db.getAllProducts);

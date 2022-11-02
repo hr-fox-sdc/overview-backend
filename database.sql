@@ -14,19 +14,32 @@
 DROP TABLE IF EXISTS style_photo;
 DROP TABLE IF EXISTS sku;
 DROP TABLE IF EXISTS style;
-DROP TABLE IF EXISTS product_feature;
+-- DROP TABLE IF EXISTS product_feature;
 DROP TABLE IF EXISTS feature;
 DROP TABLE IF EXISTS product;
 
 
 CREATE TABLE product (
-  product_id INTEGER NULL PRIMARY KEY,
-  "name" VARCHAR(30) NULL DEFAULT NULL,
-  slogan VARCHAR(50) NULL DEFAULT NULL,
-  "description" VARCHAR(255) NULL DEFAULT NULL,
-  category VARCHAR(30) NULL DEFAULT NULL,
-  default_price INT NULL DEFAULT NULL
+  product_id INTEGER NOT NULL PRIMARY KEY,
+  "name" VARCHAR(30) NOT NULL DEFAULT NULL,
+  slogan TEXT NOT NULL DEFAULT NULL,
+  "description" TEXT NOT NULL DEFAULT NULL,
+  category VARCHAR(30) NOT NULL DEFAULT NULL,
+  default_price INT NOT NULL DEFAULT NULL
 );
+
+
+-- ---
+-- Table feature
+--
+-- ---
+CREATE TABLE feature (
+  feature_id INT NOT NULL PRIMARY KEY,
+  product_id INTEGER NOT NULL REFERENCES product (product_id),
+  feature VARCHAR NOT NULL DEFAULT NULL,
+  "value" VARCHAR NOT NULL DEFAULT NULL
+);
+
 
 -- ---
 -- Table feature
@@ -34,21 +47,21 @@ CREATE TABLE product (
 -- ---
 
 
-CREATE TABLE feature (
-  feature_id INT NULL PRIMARY KEY,
-  feature_name VARCHAR NULL DEFAULT NULL
-);
+-- CREATE TABLE feature (
+--   feature_id INT NOT NULL PRIMARY KEY,
+--   feature_name VARCHAR NOT NULL DEFAULT NULL
+-- );
 
 -- ---
 -- Table product-feature
 --
 -- ---
 
-CREATE TABLE product_feature (
-  product_id INTEGER NULL PRIMARY KEY REFERENCES product (product_id),
-  feature_id INTEGER NULL DEFAULT NULL REFERENCES feature (feature_id),
-  feature_value INTEGER NULL DEFAULT NULL
-);
+-- CREATE TABLE product_feature (
+--   product_id INTEGER NOT NULL PRIMARY KEY REFERENCES product (product_id),
+--   feature_id INTEGER NOT NULL DEFAULT NULL REFERENCES feature (feature_id),
+--   "value" INTEGER NOT NULL DEFAULT NULL
+-- );
 
 -- ---
 -- Table style
@@ -57,13 +70,12 @@ CREATE TABLE product_feature (
 
 
 CREATE TABLE style (
-  style_id INTEGER NULL DEFAULT NULL PRIMARY KEY,
-  product_id INTEGER NULL DEFAULT NULL REFERENCES product (product_id),
-  "name" VARCHAR NULL DEFAULT NULL,
-  original_price INTEGER NULL DEFAULT NULL,
+  style_id INTEGER NOT NULL DEFAULT NULL PRIMARY KEY,
+  product_id INTEGER NOT NULL DEFAULT NULL REFERENCES product (product_id),
+  "name" VARCHAR NOT NULL DEFAULT NULL,
   sale_price INTEGER NULL DEFAULT NULL,
-  "default" BOOLEAN NULL DEFAULT NULL,
-  photos INTEGER NULL DEFAULT NULL
+  original_price INTEGER NOT NULL DEFAULT NULL,
+  "default_style" BOOLEAN NULL DEFAULT NULL
 );
 
 -- ---
@@ -73,9 +85,10 @@ CREATE TABLE style (
 
 
 CREATE TABLE style_photo (
-  style_id INTEGER NULL DEFAULT NULL PRIMARY KEY REFERENCES style (style_id),
-  thumbnail_url VARCHAR NULL DEFAULT NULL,
-  "url" VARCHAR NULL DEFAULT NULL
+  id INTEGER NOT NULL DEFAULT NULL,
+  style_id INTEGER NOT NULL DEFAULT NULL,
+  thumbnail_url VARCHAR NOT NULL DEFAULT NULL,
+  "url" VARCHAR NOT NULL DEFAULT NULL
 );
 
 -- ---
@@ -85,10 +98,10 @@ CREATE TABLE style_photo (
 
 
 CREATE TABLE sku (
-  sku_id INTEGER NULL DEFAULT NULL PRIMARY KEY REFERENCES style (style_id),
-  style_id INTEGER NULL DEFAULT NULL,
-  quantity INTEGER NULL DEFAULT NULL,
-  size INTEGER NULL DEFAULT NULL
+  sku_id INTEGER NOT NULL DEFAULT NULL PRIMARY KEY,
+  style_id INTEGER NOT NULL DEFAULT NULL,
+  size VARCHAR(20) NOT NULL DEFAULT NULL,
+  quantity INTEGER NOT NULL DEFAULT NULL
 );
 
 
