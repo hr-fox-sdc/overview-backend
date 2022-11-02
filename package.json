@@ -1,0 +1,25 @@
+{
+  "name": "overview-backend",
+  "version": "1.0.0",
+  "description": "Backend database for Overview routes.",
+  "main": "index.js",
+  "engines": {
+    "node": ">=4.0.0"
+  },
+  "scripts": {
+    "start": "nodemon overview-backend/index.js",
+    "test": ""
+  },
+  "dependencies": {
+    "express": "^4.18.1",
+    "pg": "^8.7.3",
+    "pgp":"0.1.0",
+    "nodemon": "^2.0.20"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/hr-fox-sdc/overview-backend.git"
+  },
+  "author": "Huong Nguyen",
+  "license": "UNLICENSED"
+}
