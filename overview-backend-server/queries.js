@@ -24,8 +24,8 @@ const getAllProducts = (request, response) => {
 
 const getProduct = (request, response) => {
   var product_id = request.params.product_id;
-  var query1 = `SELECT * from product where product_id = ${product_id}`;
-  var query2 = `SELECT feature, value from feature where product_id = ${product_id}`
+  var query1 = `SELECT * FROM product WHERE product_id = ${product_id}`;
+  var query2 = `SELECT feature, value FROM feature WHERE product_id = ${product_id}`
   connectionPool
     .query(query1)
     .then(res => {
@@ -45,7 +45,7 @@ const getProduct = (request, response) => {
 
 const getProductStyles = (request, response) => {
   var product_id = request.params.product_id;
-  var query = `SELECT * from style where product_id = ${product_id}`;
+  var query = `SELECT * FROM style WHERE product_id = ${product_id}`;
   connectionPool
     .query(query)
     .then(res => {
@@ -53,10 +53,10 @@ const getProductStyles = (request, response) => {
       let photoPromises = [];
       let skuPromises = [];
       styles.forEach((style) => {
-        photoPromises.push(connectionPool.query(`SELECT thumbnail_url, url from style_photo WHERE style_id = ${style.style_id}`)
+        photoPromises.push(connectionPool.query(`SELECT thumbnail_url, url FROM style_photo WHERE style_id = ${style.style_id}`)
           .then(res => res.rows)
         )
-        skuPromises.push(connectionPool.query(`SELECT size, quantity from sku WHERE style_id = ${style.style_id}`)
+        skuPromises.push(connectionPool.query(`SELECT size, quantity FROM sku WHERE style_id = ${style.style_id}`)
           .then(res => res.rows))
         })
         Promise.all(photoPromises)
@@ -81,7 +81,7 @@ const getProductStyles = (request, response) => {
 
 const getRelatedItems = (request, response) => {
   var product_id = request.params.product_id;
-  var query = `SELECT * from related where current_product_id = ${product_id}`;
+  var query = `SELECT * FROM related WHERE current_product_id = ${product_id}`;
   connectionPool
     .query(query)
     .then(res => response.send(res.rows))
