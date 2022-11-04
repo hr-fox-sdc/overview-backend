@@ -66,7 +66,6 @@ const getProductStyles = (request, response) => {
             })
             Promise.all(skuPromises)
               .then((res) => {
-                console.log(res)
                 styles.forEach((style, index) => {
                   style.skus = res[index];
                 })
