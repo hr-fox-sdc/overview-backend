@@ -86,20 +86,13 @@ const getRelatedItems = (request, response) => {
     .query(query)
     .then(res => response.send(res.rows))
     .catch(err => {
-      console.error('Error executing to get style information', err.stack);
+      console.error('Error executing to get related products', err.stack);
       response.status(500);
     });
 }
 
 const addToCart = (req, res) => {
   // var id = req.body.sku_id;
-  // axios.post(`${api}/cart`, {sku_id: id}, noCompressionConfig)
-  //   .then((response)=> {
-  //     res.sendStatus(response.status);
-  //   })
-  //   .catch((err)=>{
-  //     console.log('Error, cannot post to cart. Error: ', err)
-  //   })
 }
 
 module.exports = {
