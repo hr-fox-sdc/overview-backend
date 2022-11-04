@@ -8,8 +8,8 @@ export const options = {
 
 const allProducts = `http://localhost:3005/products?page=${Math.floor(Math.random() * 200)}&count=${Math.floor(Math.random() * 100)}`;
 const product = `http://localhost:3005/products/${Math.floor(Math.random() * 1000000) + 1}`;
-const styles = `http://localhost:3005/${Math.floor(Math.random() * 1000000) + 1}/styles`;
-const related = `http://localhost:3005/${Math.floor(Math.random() * 1000000) + 1}/related`;
+const styles = `http://localhost:3005/products${Math.floor(Math.random() * 1000000) + 1}/styles`;
+const related = `http://localhost:3005/products${Math.floor(Math.random() * 1000000) + 1}/related`;
 
 
 export default function test() {
