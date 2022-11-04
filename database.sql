@@ -17,6 +17,7 @@ DROP TABLE IF EXISTS style;
 -- DROP TABLE IF EXISTS product_feature;
 DROP TABLE IF EXISTS feature;
 DROP TABLE IF EXISTS product;
+DROP TABLE IF EXISTS related;
 
 
 CREATE TABLE product (
@@ -25,7 +26,7 @@ CREATE TABLE product (
   slogan TEXT NOT NULL DEFAULT NULL,
   "description" TEXT NOT NULL DEFAULT NULL,
   category VARCHAR(30) NOT NULL DEFAULT NULL,
-  default_price INT NOT NULL DEFAULT NULL
+  default_price VARCHAR(20) NOT NULL DEFAULT NULL
 );
 
 
@@ -73,9 +74,9 @@ CREATE TABLE style (
   style_id INTEGER NOT NULL DEFAULT NULL PRIMARY KEY,
   product_id INTEGER NOT NULL DEFAULT NULL REFERENCES product (product_id),
   "name" VARCHAR NOT NULL DEFAULT NULL,
-  sale_price INTEGER NULL DEFAULT NULL,
-  original_price INTEGER NOT NULL DEFAULT NULL,
-  "default_style" SMALLINT NULL DEFAULT NULL
+  sale_price VARCHAR(20) NULL DEFAULT NULL,
+  original_price VARCHAR(20) NOT NULL DEFAULT NULL,
+  "default_style" BOOLEAN NULL DEFAULT NULL
 );
 
 -- ---
@@ -102,6 +103,17 @@ CREATE TABLE sku (
   style_id INTEGER NOT NULL DEFAULT NULL,
   size VARCHAR(20) NOT NULL DEFAULT NULL,
   quantity INTEGER NOT NULL DEFAULT NULL
+);
+
+-- ---
+-- Table related
+--
+-- ---
+
+CREATE TABLE related (
+  id INTEGER NOT NULL DEFAULT NULL PRIMARY KEY,
+  current_product_id INTEGER NOT NULL DEFAULT NULL REFERENCES product (product_id),
+  related_product_id INTEGER NOT NULL DEFAULT NULL
 );
 
 
@@ -165,5 +177,9 @@ DELIMITER ','
 CSV HEADER;
 
 COPY feature(feature_id, product_id, feature, value) FROM '/Users/huongnguyen/Documents/hr/sdc/overview-backend/data/features.csv'
+DELIMITER ','
+CSV HEADER;
+
+COPY related(id, current_product_id, related_product_id) FROM '/Users/huongnguyen/Documents/hr/sdc/overview-backend/data/related.csv'
 DELIMITER ','
 CSV HEADER;
