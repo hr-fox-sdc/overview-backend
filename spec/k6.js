@@ -2,8 +2,8 @@ import http from 'k6/http';
 import { sleep, check, group } from 'k6';
 
 export const options = {
-  vus: 2, // Virtual Users
-  duration: '10s'
+  vus: 5, // Virtual Users
+  duration: '20s'
 };
 
 var route = 'http://localhost:3005/products'
