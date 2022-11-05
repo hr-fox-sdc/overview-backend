@@ -112,20 +112,22 @@ CREATE TABLE sku (
 
 CREATE TABLE related (
   id INTEGER NOT NULL DEFAULT NULL PRIMARY KEY,
-  current_product_id INTEGER NOT NULL DEFAULT NULL REFERENCES product (product_id),
+  current_product_id INTEGER NOT NULL DEFAULT NULL REFERENCES product (id),
   related_product_id INTEGER NOT NULL DEFAULT NULL
 );
 
 
 -- ---
--- Foreign Keys
+-- Indexing
 -- ---
+CREATE INDEX product_product_id_index ON product (id);
+CREATE INDEX style_product_id_index ON style (product_id);
+CREATE INDEX feature_product_id_index ON feature (product_id);
+CREATE INDEX style_photo_style_id_index ON style_photo (style_id);
+CREATE INDEX sku_current_product_id_index ON sku (style_id);
+CREATE INDEX related_product_id_index ON related (current_product_id);
 
--- ALTER TABLE style ADD FOREIGN KEY (product_id) REFERENCES product (product_id);
--- ALTER TABLE style_photo ADD FOREIGN KEY (style_id) REFERENCES style (style_id);
--- ALTER TABLE sku ADD FOREIGN KEY (style_id) REFERENCES style (style_id);
--- ALTER TABLE product_feature ADD FOREIGN KEY (product_id) REFERENCES product (product_id);
--- ALTER TABLE product_feature ADD FOREIGN KEY (feature_id) REFERENCES feature (feature_id);
+
 
 -- ---
 -- Table Properties
@@ -139,27 +141,8 @@ CREATE TABLE related (
 -- ALTER TABLE sku ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 -- ALTER TABLE product-feature ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 
--- ---
--- Test Data
--- ---
 
--- INSERT INTO products (id,name,slogan,description,category,default price) VALUES
--- (,,,,,);
--- INSERT INTO product (product_id,name,slogan,description,category,default_price) VALUES
--- (,,,,,);
--- INSERT INTO feature (feature_id,feature_name) VALUES
--- (,);
--- INSERT INTO style (style_id,product_id,name,original_price,sale_price,default?,photos) VALUES
--- (,,,,,,);
--- INSERT INTO style photo (style_id,thumbnail_url,url) VALUES
--- (,,);
--- INSERT INTO sku (sku_id,style_id,quantity,size) VALUES
--- (,,,);
--- INSERT INTO product-feature (product_id,feature_id,feature_value) VALUES
--- (,,);
-
-
-COPY product(product_id, name, slogan, description, category, default_price) FROM '/Users/huongnguyen/Documents/hr/sdc/overview-backend/data/product.csv'
+COPY product(id, name, slogan, description, category, default_price) FROM '/Users/huongnguyen/Documents/hr/sdc/overview-backend/data/product.csv'
 DELIMITER ','
 CSV HEADER;
 
