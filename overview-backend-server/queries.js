@@ -1,16 +1,9 @@
 const connectionPool = require('./connect.js')
-// const pool = require('pg').pool;
-// const pool = new Pool();
-
-
-// make queries array
-// push each promised return value of a query into queries
-// use promise.all
 
 const getAllProducts = (request, response) => {
   var limit = request.query.count || 5;
   var offset = ((request.query.page - 1) * limit) || 0;
-  var query = `SELECT * FROM product OFFSET $1 LIMIT $2`;
+  var query = `SELECT id, name, slogan, description, category, default_price FROM product OFFSET $1 LIMIT $2`;
   connectionPool
     .query(query, [offset, limit])
     .then(res => {
@@ -28,8 +21,30 @@ const getProduct = (request, response) => {
     SELECT * FROM
     (SELECT *,
       (SELECT json_agg(f) FROM
-        (SELECT feature, value FROM feature WHERE product_id = product.product_id) f )
-        as features FROM product WHERE product_id = ${product_id}) p`;
+        (SELECT feature, value FROM feature WHERE product_id = product.id) f )
+        as features FROM product WHERE id = ${product_id}) p`;
+
+  // var query = `
+  //   SELECT json_build_object
+  //   ('id', id,
+  //   'name', name,
+  //   'slogan', slogan,
+  //   'description', description,
+  //   'category', category,
+  //   'default_price', default_price,
+  //   'features', (SELECT array_agg
+  //                 (json_build_object
+  //                   ('feature', feature,
+  //                   'value', value))
+  //               ) FROM feature WHERE product_id = product.id
+  //   ) FROM product WHERE id = ${product_id}
+  //   `;
+
+  // var query = `(SELECT json_agg FROM
+  //   (json_build_object
+  //     ('feature', feature,
+  //     'value', value))
+  // ) FROM feature WHERE product_id = {product_id}`
 
   connectionPool
     .query(query)
@@ -41,34 +56,36 @@ const getProduct = (request, response) => {
 
 const getProductStyles = (request, response) => {
   var product_id = request.params.product_id;
-  var query = `SELECT * FROM style WHERE product_id = ${product_id}`;
+  var query = `
+    SELECT json_build_object
+      (
+        'product_id', ${product_id},
+        'results', (SELECT json_agg
+                    (json_build_object
+                      (
+                        'style_id', id,
+                        'name', name,
+                        'original_price', original_price,
+                        'sale_price', sale_price,
+                        'default?', default_style,
+                        'photos', (SELECT json_agg(json_build_object
+                                  (
+                                    'thumbnail_url', thumbnail_url,
+                                    'url', url
+                                  )) FROM photos where photos.styleId = styles.id),
+                        'skus', (SELECT json_object_agg(
+                                id, (SELECT json_build_object(
+                                  'quantity', quantity,
+                                  'size', size)
+                                  )
+                                ) FROM skus WHERE skus.styleId = styles.id)
+                      )) from styles where productId = {product_id} limit 5
+                    )
+      ) as t
+  `;
   connectionPool
     .query(query)
-    .then(res => {
-      var styles = res.rows;
-      let photoPromises = [];
-      let skuPromises = [];
-      styles.forEach((style) => {
-        photoPromises.push(connectionPool.query(`SELECT thumbnail_url, url FROM style_photo WHERE style_id = ${style.style_id}`)
-          .then(res => res.rows)
-        )
-        skuPromises.push(connectionPool.query(`SELECT size, quantity FROM sku WHERE style_id = ${style.style_id}`)
-          .then(res => res.rows))
-        })
-        Promise.all(photoPromises)
-          .then((res) => {
-            styles.forEach((style, index) => {
-              style.photo = res[index];
-            })
-            Promise.all(skuPromises)
-              .then((res) => {
-                styles.forEach((style, index) => {
-                  style.skus = res[index];
-                })
-                response.send(styles);
-              })
-          })
-    })
+    .then(res => response.send(res.rows[0].t))
     .catch(err => {
       console.error('Error executing to get style information', err.stack);
       response.status(500);
@@ -77,10 +94,10 @@ const getProductStyles = (request, response) => {
 
 const getRelatedItems = (request, response) => {
   var product_id = request.params.product_id;
-  var query = `SELECT * FROM related WHERE current_product_id = ${product_id}`;
+  var query = `(SELECT array_agg(related_product_id) FROM related WHERE current_product_id = ${product_id})`;
   connectionPool
     .query(query)
-    .then(res => response.send(res.rows))
+    .then(res => response.send(res.rows[0].array_agg))
     .catch(err => {
       console.error('Error executing to get related products', err.stack);
       response.status(500);
