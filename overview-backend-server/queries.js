@@ -18,37 +18,24 @@ const getAllProducts = (request, response) => {
 const getProduct = (request, response) => {
   var product_id = request.params.product_id;
   var query = `
-    SELECT * FROM
-    (SELECT *,
-      (SELECT json_agg(f) FROM
-        (SELECT feature, value FROM feature WHERE product_id = product.id) f )
-        as features FROM product WHERE id = ${product_id}) p`;
-
-  // var query = `
-  //   SELECT json_build_object
-  //   ('id', id,
-  //   'name', name,
-  //   'slogan', slogan,
-  //   'description', description,
-  //   'category', category,
-  //   'default_price', default_price,
-  //   'features', (SELECT array_agg
-  //                 (json_build_object
-  //                   ('feature', feature,
-  //                   'value', value))
-  //               ) FROM feature WHERE product_id = product.id
-  //   ) FROM product WHERE id = ${product_id}
-  //   `;
-
-  // var query = `(SELECT json_agg FROM
-  //   (json_build_object
-  //     ('feature', feature,
-  //     'value', value))
-  // ) FROM feature WHERE product_id = {product_id}`
+    (SELECT json_build_object
+    ('id', id,
+    'name', name,
+    'slogan', slogan,
+    'description', description,
+    'category', category,
+    'default_price', default_price,
+    'features', (SELECT json_agg
+                  (json_build_object
+                    ('feature', feature,
+                    'value', value))
+                 FROM feature WHERE product_id = product.id)
+    ) FROM product WHERE id = ${product_id})
+    `;
 
   connectionPool
     .query(query)
-    .then(res => response.send(res.rows[0]))
+    .then(res => response.send(res.rows[0].json_build_object))
     .catch(err => {
         console.error('Error executing to get product information', err.stack);
     })
@@ -63,23 +50,23 @@ const getProductStyles = (request, response) => {
         'results', (SELECT json_agg
                     (json_build_object
                       (
-                        'style_id', id,
+                        'style_id', style_id,
                         'name', name,
                         'original_price', original_price,
                         'sale_price', sale_price,
                         'default?', default_style,
                         'photos', (SELECT json_agg(json_build_object
-                                  (
-                                    'thumbnail_url', thumbnail_url,
-                                    'url', url
-                                  )) FROM photos where photos.styleId = styles.id),
+                          (
+                            'thumbnail_url', thumbnail_url,
+                            'url', url
+                          )) FROM style_photo WHERE style_photo.style_id = style.style_id),
                         'skus', (SELECT json_object_agg(
-                                id, (SELECT json_build_object(
+                                'id', (SELECT json_build_object(
                                   'quantity', quantity,
                                   'size', size)
                                   )
-                                ) FROM skus WHERE skus.styleId = styles.id)
-                      )) from styles where productId = {product_id} limit 5
+                                ) FROM sku WHERE sku.style_id = style.style_id)
+                      )) FROM style where product_id = ${product_id} limit 5
                     )
       ) as t
   `;
