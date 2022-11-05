@@ -2,15 +2,14 @@ import http from 'k6/http';
 import { sleep, check, group } from 'k6';
 
 export const options = {
-  vus: 5, // Virtual Users
-  duration: '100s'
+  vus: 2, // Virtual Users
+  duration: '10s'
 };
 
 const allProducts = `http://localhost:3005/products?page=${Math.floor(Math.random() * 200)}&count=${Math.floor(Math.random() * 100)}`;
 const product = `http://localhost:3005/products/${Math.floor(Math.random() * 1000000) + 1}`;
-const styles = `http://localhost:3005/products${Math.floor(Math.random() * 1000000) + 1}/styles`;
-const related = `http://localhost:3005/products${Math.floor(Math.random() * 1000000) + 1}/related`;
-
+const styles = `http://localhost:3005/products/${Math.floor(Math.random() * 1000000) + 1}/styles`;
+const related = `http://localhost:3005/products/${Math.floor(Math.random() * 1000000) + 1}/related`;
 
 export default function test() {
   group('getAllProducts', () => {
