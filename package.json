@@ -8,7 +8,7 @@
   },
   "scripts": {
     "start": "nodemon overview-backend-server/index.js",
-    "test": "",
+    "test": "k6 run spec/k6.js",
     "seed": "node seed.js"
   },
   "dependencies": {
