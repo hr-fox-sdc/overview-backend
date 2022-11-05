@@ -24,23 +24,19 @@ const getAllProducts = (request, response) => {
 
 const getProduct = (request, response) => {
   var product_id = request.params.product_id;
-  var query1 = `SELECT * FROM product WHERE product_id = ${product_id}`;
-  var query2 = `SELECT feature, value FROM feature WHERE product_id = ${product_id}`
+  var query = `
+    SELECT * FROM
+    (SELECT *,
+      (SELECT json_agg(f) FROM
+        (SELECT feature, value FROM feature WHERE product_id = product.product_id) f )
+        as features FROM product WHERE product_id = ${product_id}) p`;
+
   connectionPool
-    .query(query1)
-    .then(res => {
-      let product = res.rows[0];
-      connectionPool
-        .query(query2)
-        .then(res => {
-          product.features = res.rows;
-          response.send(product);
-        })
-    })
+    .query(query)
+    .then(res => response.send(res.rows[0]))
     .catch(err => {
-      console.error('Error executing to get product information', err.stack);
-      response.status(500);
-    });
+        console.error('Error executing to get product information', err.stack);
+    })
 }
 
 const getProductStyles = (request, response) => {
