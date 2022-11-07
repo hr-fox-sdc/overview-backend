@@ -81,10 +81,10 @@ const getProductStyles = (request, response) => {
 
 const getRelatedItems = (request, response) => {
   var product_id = request.params.product_id;
-  var query = `(SELECT array_agg(related_product_id) FROM related WHERE current_product_id = ${product_id})`;
+  var query = `(SELECT json_agg(related_product_id) FROM related WHERE current_product_id = ${product_id})`;
   connectionPool
     .query(query)
-    .then(res => response.send(res.rows[0].array_agg))
+    .then(res => response.send(res.rows[0].json_agg))
     .catch(err => {
       console.error('Error executing to get related products', err.stack);
       response.status(500);
