@@ -110,5 +110,3 @@ dist
 .DS_STORE
 
 data/
-
-/overview-backend-server/connect.js
