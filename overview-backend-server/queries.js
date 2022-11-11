@@ -30,11 +30,11 @@ const getProduct = (request, response) => {
                     ('feature', feature,
                     'value', value))
                  FROM feature WHERE product_id = product.id)
-    ) FROM product WHERE id = ${product_id})
+    ) FROM product WHERE id = $1)
     `;
 
   connectionPool
-    .query(query)
+    .query(query, [product_id])
     .then(res => response.send(res.rows[0].json_build_object))
     .catch(err => {
         console.error('Error executing to get product information', err.stack);
