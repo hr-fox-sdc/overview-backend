@@ -46,7 +46,7 @@ const getProductStyles = (request, response) => {
   var query = `
     SELECT json_build_object
       (
-        'product_id', ${product_id},
+        'product_id', $1::integer,
         'results', (SELECT json_agg
                     (json_build_object
                       (
@@ -66,12 +66,12 @@ const getProductStyles = (request, response) => {
                                   'size', size)
                                   )
                                 ) FROM sku WHERE sku.style_id = style.style_id)
-                      )) FROM style where product_id = ${product_id} limit 5
+                      )) FROM style where product_id = $1::integer limit 5
                     )
       ) as t
   `;
   connectionPool
-    .query(query)
+    .query(query, [product_id])
     .then(res => response.send(res.rows[0].t))
     .catch(err => {
       console.error('Error executing to get style information', err.stack);
