@@ -1,10 +1,9 @@
 const fs = require('fs');
-const connectionClient = require('./overview-backend-server/connect.js');
-
+const connectionPool = require('./overview-backend-server/connect.js');
 
 const initialize = fs.readFileSync('./database.sql').toString();
 
-connectionClient.connect((err, client, release) => {
+connectionPool.connect((err, client, release) => {
   if (err) {
     return console.error('Error acquiring client', err.stack);
   }
