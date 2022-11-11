@@ -3,7 +3,7 @@ const connectionPool = require('./connect.js')
 const getAllProducts = (request, response) => {
   var limit = request.query.count || 5;
   var offset = ((request.query.page - 1) * limit) || 0;
-  var query = `SELECT id, name, slogan, description, category, default_price FROM product OFFSET $1 LIMIT $2`;
+  var query = 'SELECT id, name, slogan, description, category, default_price FROM product OFFSET $1 LIMIT $2';
   connectionPool
     .query(query, [offset, limit])
     .then(res => {
