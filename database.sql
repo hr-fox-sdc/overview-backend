@@ -1,25 +1,14 @@
--- ---
--- Globals
--- ---
-
--- SET SQL_MODE="NO_AUTO_VALUE_ON_ZERO";
--- SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS style_photo;
+DROP TABLE IF EXISTS sku;
+DROP TABLE IF EXISTS style;
+DROP TABLE IF EXISTS related;
+DROP TABLE IF EXISTS feature;
+DROP TABLE IF EXISTS product;
 
 -- ---
 -- Table product
 --
 -- ---
-
-
-DROP TABLE IF EXISTS style_photo;
-DROP TABLE IF EXISTS sku;
-DROP TABLE IF EXISTS style;
--- DROP TABLE IF EXISTS product_feature;
-DROP TABLE IF EXISTS related;
-DROP TABLE IF EXISTS feature;
-DROP TABLE IF EXISTS product;
-
-
 CREATE TABLE product (
   id INTEGER NOT NULL PRIMARY KEY,
   "name" VARCHAR(30) NOT NULL DEFAULT NULL,
@@ -42,34 +31,6 @@ CREATE TABLE feature (
 );
 
 
--- ---
--- Table feature
---
--- ---
-
-
--- CREATE TABLE feature (
---   feature_id INT NOT NULL PRIMARY KEY,
---   feature_name VARCHAR NOT NULL DEFAULT NULL
--- );
-
--- ---
--- Table product-feature
---
--- ---
-
--- CREATE TABLE product_feature (
---   product_id INTEGER NOT NULL PRIMARY KEY REFERENCES product (product_id),
---   feature_id INTEGER NOT NULL DEFAULT NULL REFERENCES feature (feature_id),
---   "value" INTEGER NOT NULL DEFAULT NULL
--- );
-
--- ---
--- Table style
---
--- ---
-
-
 CREATE TABLE style (
   style_id INTEGER NOT NULL DEFAULT NULL PRIMARY KEY,
   product_id INTEGER NOT NULL DEFAULT NULL REFERENCES product (id),
@@ -83,8 +44,6 @@ CREATE TABLE style (
 -- Table style photo
 --
 -- ---
-
-
 CREATE TABLE style_photo (
   id INTEGER NOT NULL DEFAULT NULL,
   style_id INTEGER NOT NULL DEFAULT NULL,
@@ -96,8 +55,6 @@ CREATE TABLE style_photo (
 -- Table sku
 --
 -- ---
-
-
 CREATE TABLE sku (
   sku_id INTEGER NOT NULL DEFAULT NULL PRIMARY KEY,
   style_id INTEGER NOT NULL DEFAULT NULL,
@@ -109,7 +66,6 @@ CREATE TABLE sku (
 -- Table related
 --
 -- ---
-
 CREATE TABLE related (
   id INTEGER NOT NULL DEFAULT NULL PRIMARY KEY,
   current_product_id INTEGER NOT NULL DEFAULT NULL REFERENCES product (id),
