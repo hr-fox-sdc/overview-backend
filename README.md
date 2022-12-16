@@ -2,7 +2,7 @@
 
 
 ## Overview
-This backend application was built using PostgreSQL and Express.js. The frontend for Atlier Retail, an e-commerce website, was inherited as legacy code. Previously, data was stored and received on a hosted API, taking around 40-50ms to make requests. As web traffic increased, we needed to build a scalable backend to handle an increase in requests per second while optimizing performance.
+This backend application was built using PostgreSQL and Express.js. The frontend for Atlier Retail, an e-commerce website, was inherited as legacy code. Previously, data was stored and received on a hosted API, taking around 40-50ms to make requests. As web traffic increased, we needed to build a scalable backend to handle an increase in requests per second while optimizing performance. This application is specifically for the product overview section.
 
 ## Table of Contents
 * [Tech Stack](https://github.com/huongnguyen04/dinner-party/blob/main/README.md#tech-stack)  
